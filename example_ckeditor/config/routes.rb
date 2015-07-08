@@ -1,7 +1,8 @@
 Rails.application.routes.draw do
   resources :posts
-  resources :uploads , :only => [:index , :show , :create , :destroy] do
+  resources :uploads , :only => [:index , :show, :destroy] do
     member do
+      post :create
       post :upload
     end
   end

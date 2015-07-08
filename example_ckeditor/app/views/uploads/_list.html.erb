@@ -1,0 +1,105 @@
+<% content_for :js do %>
+<script>
+  jQuery(function(){
+    $('.image').click(function(){
+      var temp = window.parent.CKEDITOR.dialog.getCurrent();
+      temp._.editor.insertHtml('<img src="' + $(this).attr('data-source') + '">');
+      temp.hide();
+    });
+  });
+</script>
+<% end %>
+<% content_for :css do %>
+<style>
+  .controller{
+    position:absolute;
+    top:0;
+    left:10px;
+    width:120px;
+  }
+  .controller form{
+    border:1px #ccc solid;
+    padding:10px 0;
+    border-radius:4px;
+    margin:10px 0;
+  }
+  .controller button , .controller input{
+    display:block;
+    width: 110px;
+    margin: 0 auto;
+  }
+  .controller button{
+    background:#ccccff;
+    width: 110px;
+  }
+  .controller input{
+    text-align:center;
+    padding:4px 0;
+    margin-bottom:10px;
+  }
+  .items{
+    padding-left:130px;
+    list-style:none;
+  }
+  .items li{
+    width:120px;
+    height:120px;
+    padding:5px;
+    border:1px #ccc solid;
+    border-radius:10px;
+    float:left;
+    margin:0 0 10px 10px;
+    position:relative;
+  }
+  .items .folder{
+    display:block;
+    width:120px;
+    height:120px;
+    background:url(/img/folder.png) no-repeat;
+    background-size:cover;
+    line-height:60px;
+    vertical-align:bottom;
+    text-align:center;
+    font-size:32px;
+    text-decoration: none;
+  }
+  .items .image{
+    width:120px;
+    height:120px;
+    cursor:pointer;
+  }
+  .items .del{
+    padding:2px 4px;
+    border:1px #ccc solid;
+    border-radius:4px;
+    position:absolute;
+    bottom:0;
+    right:0;
+  }
+</style>
+<% end %>
+<div class="controller">
+  <%= form_tag upload_path(:id => @folder ? @folder.id : 0) do %>
+    <%= text_field_tag :name , nil , :placeholder => '命名資料夾' %>
+    <button>新增資料夾</button>
+  <% end %>
+  <%= form_tag upload_upload_path(:id => @folder ? @folder.id : 0) , :multipart => true do %>
+    <%= file_field_tag :image %>
+    <button>上傳圖檔</button>
+  <% end %>
+</div>
+<ul class="items">
+  <% if @folder %>
+    <li><%= link_to '..' , @folder.parent_id ? upload_path(:id => @folder.parent_id) : uploads_path , :class => 'folder' %></li>
+  <% end %>
+  <% @childs.each do |upload| %>
+    <li>
+      <% if upload.is_a?(UploadFolder) %>
+        <%= link_to upload.name , upload_path(:id => upload.id) , :class => 'folder' %>
+      <% else %>
+        <%= image_tag upload.image.url(:thumb) , :class => 'image' , :data => {:source => upload.image.url(:original)} %>
+      <% end %>
+      <%= link_to 'del' , upload_path(:id => upload.id) , :class => 'del' , :method => :delete %>
+    </li>
+  <% end %>
+</ul>

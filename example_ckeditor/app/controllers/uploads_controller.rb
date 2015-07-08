@@ -1,26 +1,24 @@
 class UploadsController < ApplicationController
   def index #root
-    @childs = UploadFolder.where('parent_id IS NULL')
+    @childs = Upload.where('parent_id IS NULL')
   end
   def show #in folder
-    @folder = UploadFolder.where(:id => params[:id])
-    @childs = Upload.where(:parent_id => @folder.id)
+    @folder = UploadFolder.where(:id => params[:id]).first
+    @childs = Upload.where(:parent_id => @folder.id).order('type')
   end
   def create #for folder create
-    @post = Post.new(post_params)
-
-    if @post.save
-      redirect_to @post, notice: 'Upload was successfully created.'
-    else
-      render :new
-    end
+    #0 = root
+    parent_folder = UploadFolder.where(:id => params[:id]).first if params[:id] && params[:id].to_i != 0
+    upload = UploadFolder.create(:name => params[:name] , :parent_id => parent_folder ? parent_folder.id : nil)
+    raise Exception.new(upload.errors.full_messages) unless upload.errors.empty?
+    redirect_to :back
   end
   def upload #for image upload
-    if @post.update(post_params)
-      redirect_to @post, notice: 'Post was successfully updated.'
-    else
-      render :edit
-    end
+    #0 = root
+    parent_folder = UploadFolder.where(:id => params[:id]).first if params[:id] && params[:id].to_i != 0
+    upload = UploadImage.create(:image => params[:image] , :parent_id => parent_folder ? parent_folder.id : nil)
+    raise Exception.new(upload.errors.full_messages) unless upload.errors.empty?
+    redirect_to :back
   end
   def destroy #for both
     @upload = Upload.find(params[:id])

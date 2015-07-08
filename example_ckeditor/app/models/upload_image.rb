@@ -13,5 +13,4 @@ class UploadImage < Upload
     def image_file_name ; return self.name ; end
     def image_file_name=(source) ; return self.name = source ; end
   #/上傳設定
-  validates :parent, :presence => true #圖片一定要在某個資料夾內，否則不給新增
 end
