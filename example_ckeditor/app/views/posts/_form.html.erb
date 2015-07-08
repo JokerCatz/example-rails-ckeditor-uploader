@@ -1,3 +1,11 @@
+<%= content_for :js do %>
+<script src="/ckeditor/ckeditor.js"></script>
+<script>
+  jQuery(function($){
+    CKEDITOR.replace('wysiwyg');
+  });
+</script>
+<% end %>
 <%= form_for(@post) do |f| %>
   <% if @post.errors.any? %>
     <div id="error_explanation">
@@ -17,7 +25,7 @@
   </div>
   <div class="field">
     <%= f.label :body %><br>
-    <%= f.text_area :body %>
+    <%= f.text_area :body , :id => 'wysiwyg' %>
   </div>
   <div class="actions">
     <%= f.submit %>

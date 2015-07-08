@@ -7,7 +7,8 @@
 
 <p>
   <strong>Body:</strong>
-  <%= @post.body %>
+  <p><b>此處有XSS安全性議題，單純使用於測試案例，請勿於產品模式這樣寫，或只開放此功能給管理人員使用</b></p>
+  <%= raw(@post.body) %>
 </p>
 
 <%= link_to 'Edit', edit_post_path(@post) %> |
