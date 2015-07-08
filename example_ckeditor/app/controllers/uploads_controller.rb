@@ -1,6 +1,6 @@
 class UploadsController < ApplicationController
   def index #root
-    @childs = Upload.where('parent_id IS NULL')
+    @childs = Upload.where('parent_id IS NULL').order('type')
   end
   def show #in folder
     @folder = UploadFolder.where(:id => params[:id]).first
